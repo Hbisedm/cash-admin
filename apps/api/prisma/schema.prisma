@@ -1,0 +1,144 @@
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/generated/nestjs-dto"
+  outputToNestJsResourceStructure = "true"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  /// @DtoUpdateOptional
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(20)
+  employees  Employee[]
+  createTime DateTime   @default(dbgenerated("NOW()")) @db.DateTime
+  updateTime DateTime   @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+}
+
+model Employee {
+  /// @DtoUpdateOptional
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(20)
+  phone              String               @db.VarChar(30)
+  departmentId       Int
+  isLeave            Boolean              @default(false)
+  /// @DtoCreateOptional
+  /// @DtoUpdateOptional
+  remark             String               @db.Text
+  // cash               Float
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  /// @DtoRelationCanCreateOnUpdate
+  /// @DtoRelationCanConnectOnUpdate
+  department         Department           @relation(fields: [departmentId], references: [id])
+  EmployeeAndAddType EmployeeAndAddType[]
+  EmployeeAndSubType EmployeeAndSubType[]
+  createTime         DateTime             @default(dbgenerated("NOW()")) @db.DateTime
+  updateTime         DateTime             @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+}
+
+// model EmployeeCommon {
+//   id                 Int                  @id @default(autoincrement())
+//   name               String               @db.VarChar(20)
+//   phone              String               @db.VarChar(30)
+//   departmentId       Int
+//   isLeave            Boolean              @default(false)
+//   /// @DtoCreateOptional
+//   /// @DtoUpdateOptional
+//   remark             String               @db.Text
+//   cash               Float
+//   /// @DtoRelationRequired
+//   /// @DtoRelationCanCreateOnCreate
+//   /// @DtoRelationCanConnectOnCreate
+//   /// @DtoRelationCanCreateOnUpdate
+//   /// @DtoRelationCanConnectOnUpdate
+//   department         Department           @relation(fields: [departmentId], references: [id])
+//   EmployeeAndAddType EmployeeAndAddType[]
+//   EmployeeAndSubType EmployeeAndSubType[]
+//   createTime         DateTime             @default(dbgenerated("NOW()")) @db.DateTime
+//   updateTime         DateTime             @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+// }
+
+// 添加类型
+model AddType {
+  /// @DtoUpdateOptional
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(20)
+  createTime DateTime @default(dbgenerated("NOW()")) @db.DateTime
+  updateTime DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+
+  EmployeeAndAddTypes EmployeeAndAddType[]
+}
+
+model EmployeeAndAddType {
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  /// @DtoRelationCanCreateOnUpdate
+  /// @DtoRelationCanConnectOnUpdate
+  addType    AddType  @relation(fields: [addTypeId], references: [id])
+  addTypeId  Int
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  /// @DtoRelationCanCreateOnUpdate
+  /// @DtoRelationCanConnectOnUpdate
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  fee        Float
+  /// @DtoCreateOptional
+  /// @DtoUpdateOptional
+  remark     String
+  /// @DtoUpdateHidden
+  createTime DateTime @default(dbgenerated("NOW()")) @db.DateTime
+  updateTime DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+
+  // @@id(name: "id", [addTypeId, employeeId])
+  id Int @id @default(autoincrement())
+}
+
+model SubType {
+  /// @DtoUpdateOptional
+  id                  Int                  @id @default(autoincrement())
+  /// @DtoRelationRequired
+  name                String               @db.VarChar(20)
+  EmployeeAndSubTypes EmployeeAndSubType[]
+  createTime          DateTime             @default(dbgenerated("NOW()")) @db.DateTime
+  updateTime          DateTime             @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+}
+
+model EmployeeAndSubType {
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  /// @DtoRelationCanCreateOnUpdate
+  /// @DtoRelationCanConnectOnUpdate
+  subType    SubType  @relation(fields: [subTypeId], references: [id])
+  subTypeId  Int
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  /// @DtoRelationCanCreateOnUpdate
+  /// @DtoRelationCanConnectOnUpdate
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  fee        Float
+  /// @DtoCreateOptional
+  /// @DtoUpdateOptional
+  remark     String
+  /// @DtoUpdateHidden
+  createTime DateTime @default(dbgenerated("NOW()")) @db.DateTime
+  updateTime DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+
+  // @@id(name: "id", [subTypeId, employeeId])
+  id Int @id @default(autoincrement())
+
+}

@@ -1,0 +1,56 @@
+# version: '3.8'
+
+services:
+  client:
+    build:
+      context: ./
+      dockerfile: ./docker/client/Dockerfile
+    # env_file:
+    #   - .env
+    depends_on:
+      - nest-app
+    ports:
+      - 8999:80
+    networks:
+      - common-network
+  nest-app:
+    build:
+      context: ./
+      dockerfile: ./docker/api/Dockerfile
+    env_file:
+      - ./apps/api/.env
+    depends_on:
+      - mysql-container
+      - redis-container
+    ports:
+      - 8344:8344
+    networks:
+      - common-network
+  mysql-container:
+    image: mysql
+    container_name: mysql-container
+    restart: always
+    ports:
+      - '3306:3306'
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - /d/env-docker/data/mysql-data:/var/lib/mysql
+      # - /Users/chenshengxin/MyCode/Env/env-docker/data/mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: cash_demo
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - common-network
+  redis-container:
+    image: redis
+    container_name: redis-container
+    ports:
+      - 6379:6379
+    volumes:
+      - /d/env-docker/data/redis-data:/data
+      # - /Users/chenshengxin/MyCode/Env/env-docker/data/redis-data:/data
+    networks:
+      - common-network
+networks:
+  common-network:

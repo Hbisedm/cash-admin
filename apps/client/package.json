@@ -1,0 +1,63 @@
+{
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.7.1",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port 3333 --open",
+    "lint": "eslint .",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview",
+    "test": "vitest",
+    "up": "taze major -I",
+    "postinstall": "npx simple-git-hooks",
+    "docker:build": "pnpm build && docker build -t cash-admin -f ./docker/Dockerfile ."
+  },
+  "dependencies": {
+    "@vee-validate/zod": "^4.13.2",
+    "@vueuse/core": "^11.0.3",
+    "@vueuse/router": "^11.0.3",
+    "axios": "^1.7.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.436.0",
+    "radix-vue": "^1.9.5",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7",
+    "vee-validate": "^4.13.2",
+    "vue": "^3.4.38",
+    "vue-router": "^4.4.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.25.2",
+    "@iconify-json/carbon": "^1.1.37",
+    "@types/node": "^22.3.0",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "@vue-macros/volar": "^0.27.4",
+    "@vue/test-utils": "^2.4.6",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.9.0",
+    "eslint-plugin-format": "^0.1.2",
+    "jsdom": "^24.1.1",
+    "lint-staged": "^15.2.9",
+    "pnpm": "^9.7.1",
+    "simple-git-hooks": "^2.11.1",
+    "tailwindcss": "^3.4.10",
+    "taze": "^0.16.6",
+    "typescript": "^5.5.4",
+    "unplugin-auto-import": "^0.18.2",
+    "unplugin-vue-components": "^0.27.4",
+    "unplugin-vue-macros": "^2.11.5",
+    "unplugin-vue-router": "^0.10.6",
+    "vite": "^5.4.1",
+    "vitest": "^2.0.5",
+    "vue-tsc": "^2.0.29"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

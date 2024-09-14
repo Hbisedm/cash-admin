@@ -1,0 +1,21 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html.dark {
+  background: #121212;
+}
+
+.btn {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-sm;
+}
+
+/* 打印去掉页眉页脚及网址 */
+@page {
+  margin-top: 0;
+  margin-bottom: 0;
+}

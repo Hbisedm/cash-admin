@@ -1,0 +1,20 @@
+{
+  "name": "cash-admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:api": "pnpm -F ./apps/api start:dev",
+    "dev:client": "pnpm -F ./apps/client dev",
+    "build:client": "pnpm -F ./apps/client build",
+    "install:api": "pnpm -F ./apps/api install",
+    "install:client": "pnpm -F ./apps/client install",
+    "postinstall": "pnpm install:api && pnpm install:client"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.13.0"
+  }
+}
