@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@9.7.1",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --mode production",
     "dev": "vite --port 3333 --open",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",

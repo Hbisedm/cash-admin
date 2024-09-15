@@ -12,5 +12,5 @@ ENV TZ=Asia/Shanghai
 COPY /docker/client/nginx.conf /etc/nginx/conf.d/default.conf
 
 # `builder` 阶段中复制构建好的文件到 Nginx 容器的网页根目录 `/usr/share/nginx/html`
-COPY /apps/client/dist/ /usr/share/nginx/html
+COPY /apps/client/dist /usr/share/nginx/html
 
