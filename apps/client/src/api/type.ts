@@ -162,6 +162,7 @@ export interface IAddTypeWithCash {
   addTypeName: string
   fee: number
   remark: string
+  time: string
 }
 export interface ISubTypeWithCash {
   employeeId: number
@@ -169,6 +170,7 @@ export interface ISubTypeWithCash {
   subTypeName: string
   fee: number
   remark: string
+  time: string
 }
 
 export interface IAddEmp {

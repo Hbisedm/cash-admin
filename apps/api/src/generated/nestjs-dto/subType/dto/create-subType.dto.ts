@@ -1,8 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+
+import {ApiProperty} from '@nestjs/swagger'
+
+
+
 
 export class CreateSubTypeDto {
   @ApiProperty({
-    type: 'string',
-  })
-  name: string;
+  type: 'string',
+})
+name: string ;
 }

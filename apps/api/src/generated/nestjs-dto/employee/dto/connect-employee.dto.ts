@@ -1,9 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+
+import {ApiProperty} from '@nestjs/swagger'
+
+
+
 
 export class ConnectEmployeeDto {
   @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
-  id: number;
+  type: 'integer',
+  format: 'int32',
+})
+id: number ;
 }

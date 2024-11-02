@@ -10,6 +10,7 @@ export class CreateUpdateCashDto {
     remark: string;
     addTypeId: number;
     employeeId: number;
+    time: Date
   }[];
 
   employeeAndSubType: {
@@ -18,5 +19,6 @@ export class CreateUpdateCashDto {
     remark: string;
     subTypeId: number;
     employeeId: number;
+    time: Date
   }[];
 }

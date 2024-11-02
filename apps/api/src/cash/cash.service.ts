@@ -45,9 +45,6 @@ export class CashService {
         {
           name: '职务补贴',
         },
-        {
-          name: '总工资',
-        },
       ],
     });
 
@@ -99,36 +96,42 @@ export class CashService {
           remark: '',
           addTypeId: 1,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           addTypeId: 2,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           addTypeId: 3,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           addTypeId: 4,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           addTypeId: 5,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           addTypeId: 6,
           employeeId: employee.id,
+          time: new Date(),
         },
       ],
     });
@@ -140,24 +143,28 @@ export class CashService {
           remark: '',
           subTypeId: 1,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           subTypeId: 2,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           subTypeId: 3,
           employeeId: employee.id,
+          time: new Date(),
         },
         {
           fee: 500,
           remark: '',
           subTypeId: 4,
           employeeId: employee.id,
+          time: new Date(),
         },
       ],
     });
@@ -298,6 +305,7 @@ export class CashService {
         remark: createEmployeeAndAddTypeDto.remark || undefined,
         addTypeId: createEmployeeAndAddTypeDto.addType.connect.id,
         employeeId: createEmployeeAndAddTypeDto.employee.connect.id,
+        time: createEmployeeAndAddTypeDto.time,
       },
     });
 
@@ -376,6 +384,7 @@ export class CashService {
         remark: createEmployeeAndSubTypeDto.remark || undefined,
         subTypeId: createEmployeeAndSubTypeDto.subType.connect.id,
         employeeId: createEmployeeAndSubTypeDto.subType.connect.id,
+          time: '2024-11-02',
       },
     });
 
@@ -450,7 +459,7 @@ export class CashService {
             },
           },
           where: {
-            createTime: {
+            time: {
               gte: new Date(startTime),
               lt: new Date(endTime),
             },
@@ -465,7 +474,7 @@ export class CashService {
             },
           },
           where: {
-            createTime: {
+            time: {
               gte: new Date(startTime),
               lt: new Date(endTime),
             },
@@ -484,7 +493,7 @@ export class CashService {
           {
             EmployeeAndAddType: {
               some: {
-                createTime: {
+                time: {
                   gte: new Date(startTime),
                   lt: new Date(endTime),
                 },
@@ -494,7 +503,7 @@ export class CashService {
           {
             EmployeeAndSubType: {
               some: {
-                createTime: {
+                time: {
                   gte: new Date(startTime),
                   lt: new Date(endTime),
                 },
@@ -524,6 +533,9 @@ export class CashService {
         return (acc = add(acc, cur.fee));
       }, 0);
       // item.calcCash = subtract(add(item.cash, addVal), subVal);
+
+      item.time = item.EmployeeAndAddType[0].time
+      item.addCash = addVal;
       item.calcCash = subtract(addVal, subVal);
     });
     return {
@@ -548,7 +560,7 @@ export class CashService {
           {
             EmployeeAndAddType: {
               none: {
-                createTime: {
+                time: {
                   gte: new Date(startTime),
                   lt: new Date(endTime),
                 },
@@ -558,7 +570,7 @@ export class CashService {
           {
             EmployeeAndSubType: {
               none: {
-                createTime: {
+                time: {
                   gte: new Date(startTime),
                   lt: new Date(endTime),
                 },
@@ -591,7 +603,7 @@ export class CashService {
             },
           },
           where: {
-            createTime: {
+            time: {
               gte: new Date(startTime),
               lt: new Date(endTime),
             },
@@ -606,7 +618,7 @@ export class CashService {
             },
           },
           where: {
-            createTime: {
+            time: {
               gte: new Date(startTime),
               lt: new Date(endTime),
             },
@@ -628,6 +640,7 @@ export class CashService {
         addTypeId: item.addTypeId,
         addTypeName: item.addType.name,
         employeeId: id,
+        time: item.time,
       };
     });
 
@@ -639,6 +652,7 @@ export class CashService {
         subTypeId: item.subTypeId,
         subTypeName: item.subType.name,
         employeeId: id,
+        time: item.time,
       };
     });
 
@@ -853,6 +867,7 @@ export class CashService {
             remark: item.remark,
             addTypeId: item.addTypeId,
             employeeId: item.employeeId,
+            time: new Date(item.time),
           };
         }),
       ],
@@ -865,6 +880,7 @@ export class CashService {
             remark: item.remark,
             subTypeId: item.subTypeId,
             employeeId: item.employeeId,
+            time: new Date(item.time),
           };
         }),
       ],
@@ -895,7 +911,7 @@ export class CashService {
 
     const existRelationAddList = await this.prisma.employeeAndAddType.findMany({
       where: {
-        createTime: {
+        time: {
           gte: new Date(createUpdateCashDto?.startTime),
           lt: new Date(createUpdateCashDto?.endTime),
         },
@@ -905,7 +921,7 @@ export class CashService {
 
     const existRelationSubList = await this.prisma.employeeAndSubType.findMany({
       where: {
-        createTime: {
+        time: {
           gte: new Date(createUpdateCashDto?.startTime),
           lt: new Date(createUpdateCashDto?.endTime),
         },

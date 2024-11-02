@@ -5,7 +5,7 @@ import { getLocalTimeZone } from '@internationalized/date'
 
 import { Calendar as CalendarIcon } from 'lucide-vue-next'
 import { findAdd, findAllCash, findDetail, findSub } from '~/api'
-import { formatDate, getCurrentMonth } from '~/utils'
+import { formatDate, getCurrentMonth, getTheMonthRange } from '~/utils'
 
 import {
   FormField,
@@ -67,6 +67,8 @@ const mode = ref<DialogMode>('add')
 const adds = ref<IAddOption[]>([])
 const subs = ref<ISubOption[]>([])
 const editEmpId = ref<undefined | number>()
+/** yyyy-MM */
+const editTime = ref<string>()
 
 async function getInitAddAndSubOption() {
   const subList = (await findSub()).data
@@ -94,22 +96,38 @@ function getTimeRange() {
   }
 }
 
-async function getDetailByEmpId(id: number) {
+/**
+ *
+ * @param id
+ * @param time yyyy-MM
+ */
+async function getDetailByEmpId(id: number, time: Date) {
+  const { startTime, endTime } = getTheMonthRange(time)
+
+  // 取出 yyyy-MM
+  editTime.value = formatDate(startTime).slice(0, 7)
+
   const resp = await findDetail({
     id,
-    ...getTimeRange(),
+    startTime: formatDate(startTime),
+    endTime: formatDate(endTime),
+
+    // ...getTimeRange(),
   })
   editEmpId.value = id
   adds.value = resp.data.employeeAndAddType
   subs.value = resp.data.employeeAndSubType
 }
 
-async function handleOpenDialog(_mode: DialogMode, empId?: number) {
+async function handleOpenDialog(_mode: DialogMode, item?: {
+  id: number
+  time: Date
+}) {
   if (_mode === 'add') {
     await getInitAddAndSubOption()
   }
   if (_mode === 'edit') {
-    await getDetailByEmpId(empId!)
+    await getDetailByEmpId(item!.id, item!.time)
   }
   nextTick(() => {
     isOpen.value = true
@@ -261,7 +279,7 @@ getPageData()
           </TableCell>
           <TableCell>{{ item.calcCash }}</TableCell>
           <TableCell class="print:hidden">
-            <Button class="pointer-events-auto" size="xs" @click="handleOpenDialog('edit', item.id)">
+            <Button class="pointer-events-auto" size="xs" @click="handleOpenDialog('edit', item)">
               编辑
             </Button>
           </TableCell>
@@ -277,7 +295,7 @@ getPageData()
         <DialogHeader>
           <DialogTitle>{{ '操作' }}</DialogTitle>
         </DialogHeader>
-        <TheAddOrEditCashForm :adds="adds" :subs="subs" :mode="mode" :edit-emp-id="editEmpId" :time="getTimeRange()" @finish="handleAddOrEditCashFormFinish" />
+        <TheAddOrEditCashForm :adds="adds" :subs="subs" :mode="mode" :edit-time="editTime" :edit-emp-id="editEmpId" :time="getTimeRange()" @finish="handleAddOrEditCashFormFinish" />
       </DialogContent>
     </Dialog>
   </div>

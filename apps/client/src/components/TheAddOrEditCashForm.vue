@@ -18,6 +18,7 @@ const props = defineProps<{
   adds: IAddOption[]
   subs: ISubOption[]
   mode: DialogMode
+  editTime: string | undefined
   editEmpId: number | undefined
   time: {
     startTime: string
@@ -28,6 +29,7 @@ const emits = defineEmits(['finish'])
 
 const formSchema = toTypedSchema(z.object({
   employeeId: z.number(),
+  time: z.string(),
 }))
 
 const { handleSubmit, setFieldValue } = useForm({
@@ -50,17 +52,24 @@ getEmployeeOptions().then(() => {
   setFieldValue('employeeId', props.editEmpId)
 })
 if (props.mode === 'add') {
+  setFieldValue('time', props.time.startTime.slice(0, 7))
   getAllNoExistCashEmp().then(() => {
     setFieldValue('employeeId', undefined)
   })
 }
 else {
+  setFieldValue('time', props.editTime)
   getEmployeeOptions().then(() => {
     setFieldValue('employeeId', props.editEmpId)
   })
 }
 // }
 // })
+
+function handleChangeMonth(e) {
+  // TODO
+  console.log(e)
+}
 
 /** 获取人员选项 */
 async function getEmployeeOptions() {
@@ -102,13 +111,16 @@ function finish(val: 1 | 2) {
 const selectEmployeeOpen = ref(false)
 const { toast } = useToast()
 const onSubmit = handleSubmit(async (values) => {
+  const theTime = `${values.time}-15`
   const add = addOptions.value.map(item => ({
     ...item,
     employeeId: values.employeeId,
+    time: theTime,
   }))
   const sub = subOptions.value.map(item => ({
     ...item,
     employeeId: values.employeeId,
+    time: theTime,
   }))
 
   let resp: any
@@ -141,6 +153,14 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <form class=" flex items-start flex-col" @submit="onSubmit">
+    <FormField v-slot="{ componentField }" name="time">
+      <FormItem class="flex items-center gap-4">
+        <FormLabel class="text-center shrink-0">
+          月份
+        </FormLabel>
+        <Input :disabled="mode === 'edit'" v-bind="componentField" placeholder="请输入月份(yyyy-mm)" type="string" @change="handleChangeMonth" />
+      </FormItem>
+    </FormField>
     <FormField v-slot="{ componentField }" name="employeeId">
       <FormItem class="flex items-center gap-4">
         <FormLabel class="text-center shrink-0">
@@ -150,6 +170,7 @@ const onSubmit = handleSubmit(async (values) => {
           <PopoverTrigger as-child>
             <Button
               variant="outline"
+              :disabled="mode === 'edit'"
               role="combobox"
               :aria-expanded="selectEmployeeOpen"
               class="w-[200px] justify-between"
