@@ -2,6 +2,6 @@ import { Employee } from 'src/generated/nestjs-dto/employee/entities/employee.en
 
 export class EmployeeVo extends Employee {
   time: Date
-  addCash: number;
-  calcCash: number;
+  addCash: string;
+  calcCash: string;
 }

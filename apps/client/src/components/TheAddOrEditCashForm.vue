@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
 import type { DialogMode, IAddOption, ISubOption } from '~/api/type'
+import { getTheMonthRange } from '~/utils'
 
 const props = defineProps<{
   // open: boolean
@@ -25,14 +26,17 @@ const props = defineProps<{
     endTime: string
   }
 }>()
+
 const emits = defineEmits(['finish'])
+
+const { toast } = useToast()
 
 const formSchema = toTypedSchema(z.object({
   employeeId: z.number(),
   time: z.string(),
 }))
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
   validationSchema: formSchema,
 })
 
@@ -53,7 +57,7 @@ getEmployeeOptions().then(() => {
 })
 if (props.mode === 'add') {
   setFieldValue('time', props.time.startTime.slice(0, 7))
-  getAllNoExistCashEmp().then(() => {
+  getAllNoExistCashEmp(props.time).then(() => {
     setFieldValue('employeeId', undefined)
   })
 }
@@ -66,9 +70,47 @@ else {
 // }
 // })
 
-function handleChangeMonth(e) {
-  // TODO
-  console.log(e)
+// function validateDateFormat(dateStr: string) {
+//   const regex = /^\d{4}-(0[1-9]|1[0-2])$/
+//   return regex.test(dateStr)
+// }
+function validateDateFormat(dateStr: string) {
+  const dateParts = dateStr.split('-')
+  if (dateParts.length !== 2) {
+    return false
+  }
+  const year = dateParts[0]
+  const month = dateParts[1]
+  if (!/^\d{4}$/.test(year)) {
+    return false
+  }
+  if (!/^(0[1-9]|1[0-2])$/.test(month)) {
+    return false
+  }
+  return true
+}
+
+function handleChangeMonth() {
+  if (validateDateFormat(values!.time as string)) {
+    const dateStr = `${values!.time}-01`
+    const newDate = new Date(dateStr)
+    const { startTime, endTime } = getTheMonthRange(newDate)
+    getAllNoExistCashEmp({
+      startTime,
+      endTime,
+    }).then(() => {
+      setFieldValue('employeeId', undefined)
+    })
+  }
+  else {
+    setFieldValue('time', props.time.startTime.slice(0, 7))
+    toast({
+      title: '提示',
+      description: '请填入正确的格式：yyyy-MM',
+      variant: 'destructive',
+      duration: 2000,
+    })
+  }
 }
 
 /** 获取人员选项 */
@@ -81,9 +123,12 @@ async function getEmployeeOptions() {
 }
 
 /** 查询不存在工资的人员 */
-async function getAllNoExistCashEmp() {
+async function getAllNoExistCashEmp(data: {
+  startTime: string
+  endTime: string
+}) {
   const resp = await findAllNoExistCash({
-    ...props.time,
+    ...data,
   })
   employees.value = resp.data.map(item => ({
     label: `${item.department!.name}-${item.name}`,
@@ -109,7 +154,6 @@ function finish(val: 1 | 2) {
 }
 
 const selectEmployeeOpen = ref(false)
-const { toast } = useToast()
 const onSubmit = handleSubmit(async (values) => {
   const theTime = `${values.time}-15`
   const add = addOptions.value.map(item => ({
@@ -158,7 +202,10 @@ const onSubmit = handleSubmit(async (values) => {
         <FormLabel class="text-center shrink-0">
           月份
         </FormLabel>
-        <Input :disabled="mode === 'edit'" v-bind="componentField" placeholder="请输入月份(yyyy-mm)" type="string" @change="handleChangeMonth" />
+        <Input :disabled="mode === 'edit'" v-bind="componentField" placeholder="请输入月份(yyyy-mm)" type="string" />
+        <Button v-if="mode === 'add'" @click="handleChangeMonth">
+          查看员工列表
+        </Button>
       </FormItem>
     </FormField>
     <FormField v-slot="{ componentField }" name="employeeId">
@@ -228,7 +275,7 @@ const onSubmit = handleSubmit(async (values) => {
         <FormLabel class="text-center shrink-0 w-[100px] text-right">
           {{ add.addTypeName }}
         </FormLabel>
-        <Input v-model="add.fee" placeholder="请输入金额" type="number" />
+        <Input v-model="add.fee" placeholder="请输入金额" type="number" step="0.01" />
         <Input v-model="add.remark" placeholder="请输入备注" />
         <X class="ml-2 h-4 w-4 shrink-0 opacity-50 hover:cursor-pointer" @click="handleDeleteOptions('addOptions', addIndex)" />
       </FormItem>
@@ -247,7 +294,7 @@ const onSubmit = handleSubmit(async (values) => {
         <FormLabel class="text-center shrink-0 w-[100px] text-right">
           {{ sub.subTypeName }}
         </FormLabel>
-        <Input v-model="sub.fee" placeholder="请输入金额" type="number" />
+        <Input v-model="sub.fee" placeholder="请输入金额" type="number" step="0.01" />
         <Input v-model="sub.remark" placeholder="请输入备注" />
         <X class="ml-2 h-4 w-4 shrink-0 opacity-50 hover:cursor-pointer" @click="handleDeleteOptions('subOptions', subIndex)" />
       </FormItem>

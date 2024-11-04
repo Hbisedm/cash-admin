@@ -51,16 +51,15 @@ const formSchema = toTypedSchema(z.object({
   }).max(11, {
     message: '请输入11位',
   }),
-  remark: z.string(),
+  remark: z.string().optional(),
 }))
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue  } = useForm({
   validationSchema: formSchema,
 })
 
 if (props.editEmp != null) {
   const { name, phone, departmentId, remark } = props.editEmp
-
   setFieldValue('name', name)
   setFieldValue('phone', phone)
   setFieldValue('departmentId', departmentId)

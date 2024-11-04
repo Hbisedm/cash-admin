@@ -535,8 +535,8 @@ export class CashService {
       // item.calcCash = subtract(add(item.cash, addVal), subVal);
 
       item.time = item.EmployeeAndAddType[0].time
-      item.addCash = addVal;
-      item.calcCash = subtract(addVal, subVal);
+      item.addCash = addVal.toFixed(2);
+      item.calcCash = subtract(addVal, subVal).toFixed(2);
     });
     return {
       list,

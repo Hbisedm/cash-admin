@@ -42,8 +42,6 @@ export function getCurrentMonth() {
  */
 export function getTheMonthRange(time: Date) {
   const now = new Date(time)
-  console.log(now)
-
   // 当前月份的第一天
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 

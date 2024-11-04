@@ -166,7 +166,7 @@ getPageData()
         </FormField>
 
         <FormField v-slot="{ componentField }" name="time">
-          <FormItem class="flex items-center gap-4">
+          <FormItem class="flex items-center gap-4 ml-2">
             <FormLabel class="text-center shrink-0">
               日期
             </FormLabel>
@@ -201,13 +201,13 @@ getPageData()
             </Popover>
           </FormItem>
         </FormField>
-        <button type="submit" class="btn ml-[10px]">
+        <button type="submit" class="btn ml-[30px]">
           查询
         </button>
       </form>
 
       <div class="ml-[10px]">
-        <Button type="primary" @click="() => handleOpenDialog('add')">
+        <Button variant="outline" @click="() => handleOpenDialog('add')">
           新增工资
         </Button>
       </div>
@@ -229,6 +229,9 @@ getPageData()
           </TableHead>
           <TableHead class="text-center">
             奖励
+          </TableHead>
+          <TableHead class="text-center">
+            奖励总额
           </TableHead>
           <TableHead class="text-center">
             惩罚
@@ -266,6 +269,7 @@ getPageData()
               无
             </div>
           </TableCell>
+          <TableCell>{{ item.addCash }}</TableCell>
           <TableCell class="align-top">
             <div v-if="item.EmployeeAndSubType.length > 0" class="grid grid-cols-4 gap-2 bg-[#f3f3f3] p-2 ">
               <div v-for="sonSub in item.EmployeeAndSubType" :key="sonSub.employeeId" class="flex flex-col ">
