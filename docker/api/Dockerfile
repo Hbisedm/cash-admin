@@ -26,7 +26,7 @@ WORKDIR /app
 
 RUN npm install pnpm -g
 
-RUN npm install @brakebein/prisma-generator-nestjs-dto -g
+RUN npm install @brakebein/prisma-generator-nestjs-dto@1.23.1 -g
 
 RUN pnpm install --production
 

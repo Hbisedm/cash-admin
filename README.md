@@ -11,6 +11,10 @@
 
 env: mysql、redis、node:18
 
+## Problem
+
+Maybe pnpm install failed, try to remove `.npmrc`
+
 ## Run
 
 first change `docker-compose.yml` volumes config
